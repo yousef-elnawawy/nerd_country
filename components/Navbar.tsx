@@ -33,13 +33,32 @@ export default function Navbar() {
 
   useEffect(() => {
     if (isOpen) {
+      const scrollY = window.scrollY;
       document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.top = `-${scrollY}px`;
+      window.scrollTo(0, 0);
     } else {
+      const top = document.body.style.top;
       document.body.style.overflow = "auto";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
+      if (top) {
+        window.scrollTo(0, parseInt(top || "0") * -1);
+      }
     }
 
     return () => {
+      const top = document.body.style.top;
       document.body.style.overflow = "auto";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
+      if (top) {
+        window.scrollTo(0, parseInt(top || "0") * -1);
+      }
     };
   }, [isOpen]);
 
@@ -122,8 +141,10 @@ export default function Navbar() {
 
       {/* Mobile Fullscreen Menu */}
       <div
-        className={`fixed inset-0 z-[999] lg:hidden bg-background transition-all duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        className={`fixed inset-0 z-[999] lg:hidden transition-all duration-300 ${
+          isOpen
+            ? "opacity-100 visible pointer-events-auto bg-background/95 backdrop-blur-sm border-b border-surface-container/30"
+            : "opacity-0 invisible pointer-events-none bg-background"
         }`}
       >
         <div className="flex h-full flex-col items-center justify-center gap-8">
